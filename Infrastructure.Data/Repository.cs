@@ -19,20 +19,32 @@ namespace Infrastructure.Data
             Set = context.Set<TEntity>();
         }
 
+        private void Include(Queue<string> includes, ref IQueryable<TEntity> query)
+        {
+            if (includes.Count == 0)
+                return;
+            query = query.Include(includes.Dequeue());
+            Include(includes, ref query);
+        }
+
         public virtual async Task<IEnumerable<TEntity>> GetEntitiesAsync(
             Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null
+            string include = "",
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            IQueryable<TEntity> query = null
         )
         {
-            IQueryable<TEntity> query = Set;
+            if (query == null)
+                query = Set;
             if (filter != null) query = query.Where(filter);
             if (orderBy != null) orderBy(query).ToList();
+            if (include.Length > 0) Include(new Queue<string>(include.Split(",")), ref query);
             return await query.ToListAsync();
         }
 
-        public virtual async Task<TEntity> GetEntityAsync(object key)
+        public virtual async Task<TEntity> GetEntityAsync(object key, string include = "", IQueryable<TEntity> query = null)
         {
-            return (await GetEntitiesAsync(e => e.Id.Equals(key))).FirstOrDefault();
+            return (await GetEntitiesAsync(e => e.Id.Equals(key), include, null, query)).FirstOrDefault();
         }
 
         public virtual async Task<TEntity> InsertEntityAsync(TEntity entity)

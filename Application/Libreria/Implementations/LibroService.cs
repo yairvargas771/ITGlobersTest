@@ -80,24 +80,24 @@ namespace Application.Libreria.Implementations
             await unitOfWork.CommitAsync(cancelationToken);
         }
 
-        public async Task<IEnumerable<Libro>> GetAllLibrosAsync()
+        public async Task<IEnumerable<Libro>> GetAllLibrosAsync(bool eager = false)
         {
-            return await unitOfWork.LibroRepository.GetEntitiesAsync();
+            return await unitOfWork.LibroRepository.GetEntitiesAsync(null, eager ? "Autores,Editorial": "");
         }
 
-        public async Task<Libro> GetLibroAsync(int id)
+        public async Task<Libro> GetLibroAsync(int id, bool eager = false)
         {
-            return await unitOfWork.LibroRepository.GetEntityAsync(id);
+            return await unitOfWork.LibroRepository.GetEntityAsync(id, eager ? "Autores,Editorial" : "");
         }
 
-        public async Task<Libro> GetLibroAsync(Expression<Func<Libro, bool>> cond)
+        public async Task<Libro> GetLibroAsync(Expression<Func<Libro, bool>> cond, bool eager = false)
         {
-            return await unitOfWork.LibroRepository.GetEntityAsync(cond);
+            return await unitOfWork.LibroRepository.GetEntityAsync(cond, eager ? "Autores,Editorial" : "");
         }
 
-        public async Task<IEnumerable<Libro>> GetLibrosAsync(Expression<Func<Libro, bool>> cond)
+        public async Task<IEnumerable<Libro>> GetLibrosAsync(Expression<Func<Libro, bool>> cond, bool eager = false)
         {
-            return await unitOfWork.LibroRepository.GetEntitiesAsync(cond);
+            return await unitOfWork.LibroRepository.GetEntitiesAsync(cond, eager ? "Autores,Editorial" : "");
         }
 
         public async Task UpdateLibroAsync(Libro Libro)

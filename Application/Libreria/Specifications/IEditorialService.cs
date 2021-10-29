@@ -8,10 +8,10 @@ namespace Application.Libreria.Specifications
 {
     public interface IEditorialService
     {
-        Task<Editorial> GetEditorialAsync(int id);
-        Task<Editorial> GetEditorialAsync(Expression<Func<Editorial, bool>> cond);
-        Task<IEnumerable<Editorial>> GetAllEditorialesAsync();
-        Task<IEnumerable<Editorial>> GetEditorialesAsync(Expression<Func<Editorial, bool>> cond);
+        Task<Editorial> GetEditorialAsync(int id, bool eager = false);
+        Task<Editorial> GetEditorialAsync(Expression<Func<Editorial, bool>> cond, bool eager = false);
+        Task<IEnumerable<Editorial>> GetAllEditorialesAsync(bool eager = false);
+        Task<IEnumerable<Editorial>> GetEditorialesAsync(Expression<Func<Editorial, bool>> cond, bool eager = false);
         Task UpdateEditorialAsync(Editorial autor);
         Task DeleteEditorialAsync(int id);
         Task DeleteEditorialAsync(Expression<Func<Editorial, bool>> cond);

@@ -23,21 +23,20 @@ namespace WebApi.Controllers
             this.autorService = autorService;
         }
 
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<ActionResult<Autor>> GetAutorAsync(int id)
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<AutorDto>> GetAutorAsync(int Id, bool eager = false)
         {
-            var autor = await autorService.GetAutorAsync(id);
-            return autor == null ? NotFound() : Ok(autor);
+            var autor = await autorService.GetAutorAsync(Id, eager);
+            return autor == null ? NotFound() : Ok((AutorDto)autor);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Autor>>> GetAutoresAsync()
+        public async Task<ActionResult<IEnumerable<AutorDto>>> GetAutoresAsync(bool eager = false)
         {
-            return Ok(await autorService.GetAllAutoresAsync());
+            return Ok((await autorService.GetAllAutoresAsync(eager)).Select(autor => (AutorDto)autor));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAutorAsync(int id)
         {
             await autorService.DeleteAutorAsync(id);
@@ -58,12 +57,12 @@ namespace WebApi.Controllers
             return Ok();
         }
 
-        [HttpPut("Agregar-Libro")]
-        public async Task<ActionResult> AgregarLibro(int isbn, int autorId)
+        [HttpPut("{autorId}/Agregar-Libro/{libroId}")]
+        public async Task<ActionResult> AgregarLibro(int libroId, int autorId)
         {
             try
             {
-                await autorService.AgregarLibroAsync(isbn, autorId);
+                await autorService.AgregarLibroAsync(libroId, autorId);
                 return Ok();
             }
             catch (EntityNotFoundException e)
@@ -76,12 +75,12 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("Remover-Libro")]
-        public async Task<ActionResult> RemoverLibro(int isbn, int autorId)
+        [HttpPut("{autorId}/Remover-Libro/{libroId}")]
+        public async Task<ActionResult> RemoverLibro(int libroId, int autorId)
         {
             try
             {
-                await autorService.RemoverLibroAsync(isbn, autorId);
+                await autorService.RemoverLibroAsync(libroId, autorId);
                 return Ok();
             }
             catch (EntityNotFoundException e)

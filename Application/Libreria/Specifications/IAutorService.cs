@@ -8,10 +8,10 @@ namespace Application.Libreria.Specifications
 {
     public interface IAutorService
     {
-        Task<Autor> GetAutorAsync(int id);
-        Task<Autor> GetAutorAsync(Expression<Func<Autor, bool>> cond);
-        Task<IEnumerable<Autor>> GetAllAutoresAsync();
-        Task<IEnumerable<Autor>> GetAutoresAsync(Expression<Func<Autor, bool>> cond);
+        Task<Autor> GetAutorAsync(int id, bool eager = false);
+        Task<Autor> GetAutorAsync(Expression<Func<Autor, bool>> cond, bool eager = false);
+        Task<IEnumerable<Autor>> GetAllAutoresAsync(bool eager = false);
+        Task<IEnumerable<Autor>> GetAutoresAsync(Expression<Func<Autor, bool>> cond, bool eager = false);
         Task UpdateAutorAsync(Autor autor);
         Task DeleteAutorAsync(int id);
         Task DeleteAutorAsync(Expression<Func<Autor, bool>> cond);

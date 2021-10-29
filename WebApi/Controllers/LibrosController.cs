@@ -20,21 +20,20 @@ namespace WebApi.Controllers
             this.libroService = LibroService;
         }
 
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<ActionResult<Libro>> GetLibroAsync(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Libro>> GetLibroAsync(int id, bool eager = false)
         {
-            var Libro = await libroService.GetLibroAsync(id);
-            return Libro == null ? NotFound() : Ok(Libro);
+            var Libro = await libroService.GetLibroAsync(id, eager);
+            return Libro == null ? NotFound() : Ok((LibroDto)Libro);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Libro>>> GetLibrosAsync()
+        public async Task<ActionResult<IEnumerable<LibroDto>>> GetLibrosAsync(bool eager = false)
         {
-            return Ok(await libroService.GetAllLibrosAsync());
+            return Ok((await libroService.GetAllLibrosAsync(eager)).Select(libro => (LibroDto)libro));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteLibroAsync(int id)
         {
             await libroService.DeleteLibroAsync(id);

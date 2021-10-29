@@ -26,8 +26,8 @@ namespace Application.Libreria.Implementations
             CancellationToken cancelationToken = new CancellationToken();
 
             // Verificar si el autor existe
-            var autor = await unitOfWork.AutorRepository.GetEntityAsync(autorId);
-            if (autor != null)
+            var autor = await unitOfWork.AutorRepository.GetEntityAsync(autorId, include: "Libros");
+            if (autor == null)
                 throw new EntityNotFoundException(typeof(Autor));
 
             // Verificar si el libro existe
@@ -69,30 +69,30 @@ namespace Application.Libreria.Implementations
             await unitOfWork.CommitAsync(cancelationToken);
         }
 
-        public async Task<IEnumerable<Autor>> GetAllAutoresAsync()
+        public async Task<IEnumerable<Autor>> GetAllAutoresAsync(bool eager = false)
         {
-            return await unitOfWork.AutorRepository.GetEntitiesAsync();
+            return await unitOfWork.AutorRepository.GetEntitiesAsync(null, eager ? "Libros" : "");
         }
 
-        public async Task<Autor> GetAutorAsync(int id)
+        public async Task<Autor> GetAutorAsync(int id, bool eager = false)
         {
-            return await unitOfWork.AutorRepository.GetEntityAsync(id);
+            return await unitOfWork.AutorRepository.GetEntityAsync(id, eager ? "Libros" : "");
         }
 
-        public async Task<Autor> GetAutorAsync(Expression<Func<Autor, bool>> cond)
+        public async Task<Autor> GetAutorAsync(Expression<Func<Autor, bool>> cond, bool eager = false)
         {
-            return await unitOfWork.AutorRepository.GetEntityAsync(cond);
+            return await unitOfWork.AutorRepository.GetEntityAsync(cond, eager ? "Libros": "");
         }
 
-        public async Task<IEnumerable<Autor>> GetAutoresAsync(Expression<Func<Autor, bool>> cond)
+        public async Task<IEnumerable<Autor>> GetAutoresAsync(Expression<Func<Autor, bool>> cond, bool eager = false)
         {
-            return await unitOfWork.AutorRepository.GetEntitiesAsync(cond);
+            return await unitOfWork.AutorRepository.GetEntitiesAsync(cond, eager ? "Libros" : "");
         }
 
         public async Task RemoverLibroAsync(int isbn, int autorId)
         {
             // Verificar si el autor existe
-            var autor = await unitOfWork.AutorRepository.GetEntityAsync(autorId);
+            var autor = await unitOfWork.AutorRepository.GetEntityAsync(autorId, include: "Libros");
             if (autor == null)
                 throw new EntityNotFoundException(typeof(Autor));
 
@@ -102,11 +102,12 @@ namespace Application.Libreria.Implementations
                 throw new EntityNotFoundException(typeof(Libro));
 
             // Verificar que el autor esté relacionado con el libro
-            if (autor.Libros.Where(libro => libro.Id == isbn).Any())
+            if (!autor.Libros.Where(libro => libro.Id == isbn).Any())
                 throw new EntityIsNotRelatedToException(typeof(Autor), typeof(Libro));
 
             // Remover el libro del autor
             autor.Libros.Remove(libro);
+            unitOfWork.AutorRepository.UpdateEntity(autor);
 
             // Guardar los cambios
             CancellationToken cancellationToken = new CancellationToken();

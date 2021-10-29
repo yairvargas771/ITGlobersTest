@@ -24,23 +24,23 @@ namespace Application.Libreria.Implementations
 
         public async Task AgregarLibroAsync(int isbn, int editorialId)
         {
-            // Verificar si el autor existe
-            var autor = await unitOfWork.AutorRepository.GetEntityAsync(editorialId);
-            if (autor != null)
-                throw new EntityNotFoundException(typeof(Autor));
+            // Verificar si la editorial existe
+            var editorial = await unitOfWork.EditorialRepository.GetEntityAsync(editorialId, include: "Libros");
+            if (editorial == null)
+                throw new EntityNotFoundException(typeof(Editorial));
 
             // Verificar si el libro existe
             var libro = await unitOfWork.LibroRepository.GetEntityAsync(isbn);
             if (libro == null)
                 throw new EntityNotFoundException(typeof(Libro));
 
-            // Verificar si el autor ya está relacionado con este libro
-            if (autor.Libros.Contains(libro))
-                throw new EntityIsAlreadyRelatedToException(typeof(Autor), typeof(Libro));
+            // Verificar si la editorial ya está relacionado con este libro
+            if (editorial.Libros.Contains(libro))
+                throw new EntityIsAlreadyRelatedToException(typeof(Editorial), typeof(Libro));
 
-            // Relacionar el libro al autor
-            autor.Libros.Add(libro);
-            unitOfWork.AutorRepository.UpdateEntity(autor);
+            // Relacionar el libro con la editorial
+            editorial.Libros.Add(libro);
+            unitOfWork.EditorialRepository.UpdateEntity(editorial);
 
             // Guardar los cambios en el contexto
             CancellationToken cancelationToken = new CancellationToken();
@@ -69,31 +69,31 @@ namespace Application.Libreria.Implementations
             await unitOfWork.CommitAsync(cancelationToken);
         }
 
-        public async Task<IEnumerable<Editorial>> GetAllEditorialesAsync()
+        public async Task<IEnumerable<Editorial>> GetAllEditorialesAsync(bool eager = false)
         {
-            return await unitOfWork.EditorialRepository.GetEntitiesAsync();
+            return await unitOfWork.EditorialRepository.GetEntitiesAsync(include: eager ? "Libros" : "");
         }
 
-        public async Task<Editorial> GetEditorialAsync(int id)
+        public async Task<Editorial> GetEditorialAsync(int id, bool eager = false)
         {
-            return await unitOfWork.EditorialRepository.GetEntityAsync(id);
+            return await unitOfWork.EditorialRepository.GetEntityAsync(id, eager ? "Libros": "");
         }
 
-        public async Task<Editorial> GetEditorialAsync(Expression<Func<Editorial, bool>> cond)
+        public async Task<Editorial> GetEditorialAsync(Expression<Func<Editorial, bool>> cond, bool eager = false)
         {
-            return await unitOfWork.EditorialRepository.GetEntityAsync(cond);
+            return await unitOfWork.EditorialRepository.GetEntityAsync(cond, eager ? "Libros" : "");
         }
 
-        public async Task<IEnumerable<Editorial>> GetEditorialesAsync(Expression<Func<Editorial, bool>> cond)
+        public async Task<IEnumerable<Editorial>> GetEditorialesAsync(Expression<Func<Editorial, bool>> cond, bool eager = false)
         {
-            return await unitOfWork.EditorialRepository.GetEntitiesAsync(cond);
+            return await unitOfWork.EditorialRepository.GetEntitiesAsync(cond, eager ? "Libros" : "");
         }
 
         public async Task RemoverLibroAsync(int isbn, int editorialId)
         {
             // Verificar si la editorial existe
-            var autor = await unitOfWork.EditorialRepository.GetEntityAsync(editorialId);
-            if (autor == null)
+            var editorial = await unitOfWork.EditorialRepository.GetEntityAsync(editorialId, include: "Libros");
+            if (editorial == null)
                 throw new EntityNotFoundException(typeof(Editorial));
 
             // Verificar si el libro existe
@@ -102,11 +102,12 @@ namespace Application.Libreria.Implementations
                 throw new EntityNotFoundException(typeof(Libro));
 
             // Verificar que la editorial esté relacionado con el libro
-            if (autor.Libros.Where(libro => libro.Id == isbn).Any())
+            if (!editorial.Libros.Where(libro => libro.Id == isbn).Any())
                 throw new EntityIsNotRelatedToException(typeof(Editorial), typeof(Libro));
 
-            // Remover el libro del autor
-            autor.Libros.Remove(libro);
+            // Remover el libro de la editorial
+            editorial.Libros.Remove(libro);
+            unitOfWork.EditorialRepository.UpdateEntity(editorial);
 
             // Guardar los cambios
             CancellationToken cancellationToken = new CancellationToken();

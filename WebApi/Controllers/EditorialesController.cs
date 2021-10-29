@@ -21,21 +21,20 @@ namespace WebApi.Controllers
             this.editorialService = EditorialService;
         }
 
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<ActionResult<Editorial>> GetEditorialAsync(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<EditorialDto>> GetEditorialAsync(int id, bool eager = false)
         {
-            var Editorial = await editorialService.GetEditorialAsync(id);
-            return Editorial == null ? NotFound() : Ok(Editorial);
+            var Editorial = await editorialService.GetEditorialAsync(id, eager);
+            return Editorial == null ? NotFound() : Ok((EditorialDto)Editorial);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Editorial>>> GetEditorialesAsync()
+        public async Task<ActionResult<IEnumerable<Editorial>>> GetEditorialesAsync(bool eager = false)
         {
-            return Ok(await editorialService.GetAllEditorialesAsync());
+            return Ok((await editorialService.GetAllEditorialesAsync(eager)).Select(editorial => (EditorialDto)editorial));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteEditorialAsync(int id)
         {
             await editorialService.DeleteEditorialAsync(id);
@@ -56,12 +55,12 @@ namespace WebApi.Controllers
             return Ok();
         }
 
-        [HttpPut("Agregar-Libro")]
-        public async Task<ActionResult> AgregarLibro(int isbn, int editorialId)
+        [HttpPut("{editorialId}/Agregar-Libro/{libroId}")]
+        public async Task<ActionResult> AgregarLibro(int libroId, int editorialId)
         {
             try
             {
-                await editorialService.AgregarLibroAsync(isbn, editorialId);
+                await editorialService.AgregarLibroAsync(libroId, editorialId);
                 return Ok();
             }
             catch (EntityNotFoundException e)
@@ -74,12 +73,12 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("Remover-Libro")]
-        public async Task<ActionResult> RemoverLibro(int isbn, int editorialId)
+        [HttpPut("{editorialId}/Remover-Libro/{libroId}")]
+        public async Task<ActionResult> RemoverLibro(int libroId, int editorialId)
         {
             try
             {
-                await editorialService.RemoverLibroAsync(isbn, editorialId);
+                await editorialService.RemoverLibroAsync(libroId, editorialId);
                 return Ok();
             }
             catch (EntityNotFoundException e)
