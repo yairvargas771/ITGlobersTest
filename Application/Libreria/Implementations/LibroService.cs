@@ -27,13 +27,6 @@ namespace Application.Libreria.Implementations
             Autor autor;
             Editorial editorial;
 
-            // Verificar si el libro ya está registrado
-            if (await unitOfWork.LibroRepository.EntityExistAsync(libro.Id))
-                throw new EntityAlreadyExistException(typeof(Libro));
-
-            // Insertar el libro
-            var result = await unitOfWork.LibroRepository.InsertEntityAsync(libro);
-
             // Conseguir el autor
             if (autorId.HasValue)
             {
@@ -43,8 +36,10 @@ namespace Application.Libreria.Implementations
                 if (autor == null)
                     throw new EntityNotFoundException(typeof(Autor));
 
-                // Agregar el libro al autor
-                autor.Libros.Add(libro);
+                //// Agregar el libro al autor
+                //autor.Libros.Add(libro);
+                libro.Autores = new List<Autor>();
+                libro.Autores.Add(autor);
             }
 
             // Conseguir la editorial
@@ -56,9 +51,17 @@ namespace Application.Libreria.Implementations
                 if (editorial == null)
                     throw new EntityNotFoundException(typeof(Editorial));
 
-                // Agregar el libro a la editorial
-                editorial.Libros.Add(libro);
+                //// Agregar el libro a la editorial
+                //editorial.Libros.Add(libro);
+                libro.Editorial = editorial;
             }
+
+            // Verificar si el libro ya está registrado
+            if (await unitOfWork.LibroRepository.EntityExistAsync(libro.Id))
+                throw new EntityAlreadyExistException(typeof(Libro));
+
+            // Insertar el libro
+            var result = await unitOfWork.LibroRepository.InsertEntityAsync(libro);
 
             // Guardar los cambios
             await unitOfWork.CommitAsync(cancelationToken);
