@@ -14,14 +14,20 @@ namespace ITGlobersTest.Pages.Editoriales
     public class EditModel : PageModel
     {
         private readonly EditorialService editorialService;
+        private readonly LibroService libroService;
 
-        public EditModel(EditorialService editorialService)
+        public EditModel(EditorialService editorialService, LibroService libroService)
         {
             this.editorialService = editorialService;
+            this.libroService = libroService;
         }
 
         [BindProperty]
         public Editorial Editorial { get; set; }
+        [BindProperty]
+        public int selectedLibroAEliminar { get; set; }
+        [BindProperty]
+        public int selectedLibroAAgregar { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -36,24 +42,33 @@ namespace ITGlobersTest.Pages.Editoriales
             {
                 return NotFound();
             }
+
+            var libros = await libroService.GetLibrosAsync();
+            ViewData["libros"] = libros.Where(libro => !Editorial.Libros.Where(_libro => _libro.Id == libro.Id).Any()).ToList();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            //if (!ModelState.IsValid)
+            //{
+            //    return Page();
+            //}
+
+            await editorialService.UpdateEditorialAsync(Editorial);
+            if (selectedLibroAEliminar != 0)
             {
-                return Page();
+                await editorialService.DesasociarLibro(selectedLibroAEliminar, Editorial.Id);
+            }
+
+            if (selectedLibroAAgregar != 0)
+            {
+                await editorialService.AsociarLibro(selectedLibroAAgregar, Editorial.Id);
             }
 
             await editorialService.UpdateEditorialAsync(Editorial);
 
             return RedirectToPage("./Index");
-        }
-
-        private async Task<bool> EditorialExistsAsync(int id)
-        {
-            return (await editorialService.GetEditorialAsync(id)) != null;
         }
     }
 }

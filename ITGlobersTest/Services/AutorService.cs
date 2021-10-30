@@ -22,15 +22,26 @@ namespace ITGlobersTest.Services
             return (Autor)JsonConvert.DeserializeObject<AutorDto>(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<Autor> AsociarLibro(int libroId, int autorId)
+        public async Task<string> AsociarLibro(int libroId, int autorId)
         {
             var autor = await httpClient.GetAsync($"{apiUrl}/api/Autores/{autorId}?eager=false");
-            var autorDto = await httpClient.PutAsync(
+            await httpClient.PutAsync(
                 $"{apiUrl}/api/Autores/{autorId}/Agregar-Libro/{libroId}",
                 new StringContent(JsonConvert.SerializeObject(autor),
                 Encoding.UTF8,
                 "application/json"));
-            return (Autor)JsonConvert.DeserializeObject<AutorDto>(await autorDto.Content.ReadAsStringAsync());
+            return "Libro agregado";
+        }
+
+        public async Task<string> DesasociarLibro(int libroId, int autorId)
+        {
+            var autor = await httpClient.GetAsync($"{apiUrl}/api/Autores/{autorId}?eager=false");
+            await httpClient.PutAsync(
+                $"{apiUrl}/api/Autores/{autorId}/Remover-Libro/{libroId}",
+                new StringContent(JsonConvert.SerializeObject(autor),
+                Encoding.UTF8,
+                "application/json"));
+            return "Libro removido";
         }
 
         public async Task<IEnumerable<Autor>> GetAutoresAsync()

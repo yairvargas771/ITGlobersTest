@@ -23,6 +23,24 @@
                 <input asp-for="Editorial.Sede" class="form-control" />
                 <span asp-validation-for="Editorial.Sede" class="text-danger"></span>
             </div>
+            @if (Model.Editorial.Libros.Count() > 0)
+            {
+                <div class="form-group">
+                    <label class="control-label">Seleccione el libro que quiere eliminar</label>
+                    <select class="form-control" asp-for="selectedLibroAEliminar" asp-items="@(new SelectList(Model.Editorial.Libros, "Id", "Titulo"))">
+                        <option>Seleccione el libro a eliminar</option>
+                    </select>
+                </div>
+            }
+            @if ((new SelectList(ViewData["libros"] as List<Domain.Libreria.Libro>).Count() > 0))
+            {
+                <div class="form-group">
+                    <label class="control-label">Seleccione el libro que quiere agregar</label>
+                    <select class="form-control" asp-for="selectedLibroAAgregar" asp-items="@(new SelectList(ViewData["libros"] as List<Domain.Libreria.Libro>, "Id", "Titulo"))">
+                        <option>Seleccione el libro a agregar</option>
+                    </select>
+                </div>
+            }
             <input type="hidden" asp-for="Editorial.Id" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

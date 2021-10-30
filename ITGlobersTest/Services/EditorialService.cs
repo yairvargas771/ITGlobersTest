@@ -15,6 +15,28 @@ namespace ITGlobersTest.Services
         private string apiUrl = "https://localhost:44315";
         private HttpClient httpClient = new HttpClient();
 
+        public async Task<string> AsociarLibro(int libroId, int editorialId)
+        {
+            var editorial = await httpClient.GetAsync($"{apiUrl}/api/Editoriales/{editorialId}?eager=false");
+            await httpClient.PutAsync(
+                $"{apiUrl}/api/Editoriales/{editorialId}/Agregar-Libro/{libroId}",
+                new StringContent(JsonConvert.SerializeObject(editorial),
+                Encoding.UTF8,
+                "application/json"));
+            return "Libro agregado";
+        }
+
+        public async Task<string> DesasociarLibro(int libroId, int editorialId)
+        {
+            var editorial = await httpClient.GetAsync($"{apiUrl}/api/Editoriales/{editorialId}?eager=false");
+            await httpClient.PutAsync(
+                $"{apiUrl}/api/Editoriales/{editorialId}/Remover-Libro/{libroId}",
+                new StringContent(JsonConvert.SerializeObject(editorial),
+                Encoding.UTF8,
+                "application/json"));
+            return "Libro removido";
+        }
+
         public async Task<Editorial> GetEditorialAsync(int id)
         {
             var response = await httpClient.GetAsync($"{apiUrl}/api/Editoriales/{id}?eager=true");

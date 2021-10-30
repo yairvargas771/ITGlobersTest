@@ -26,8 +26,18 @@
             @if (Model.Autor.Libros.Count() > 0)
             {
                 <div class="form-group">
-                    <label class="control-label">Libros</label>
-                    <select class="form-control" asp-for="selectedLibro" asp-items="@(new SelectList(ViewData["libros"] as List<Domain.Libreria.Libro>, "Id", "Titulo"))">
+                    <label class="control-label">Seleccione el libro que quiere eliminar</label>
+                    <select class="form-control" asp-for="selectedLibroAEliminar" asp-items="@(new SelectList(Model.Autor.Libros, "Id", "Titulo"))">
+                        <option>Seleccione el libro a eliminar</option>
+                    </select>
+                </div>
+            }
+            @if ((new SelectList(ViewData["libros"] as List<Domain.Libreria.Libro>).Count() > 0))
+            {
+                <div class="form-group">
+                    <label class="control-label">Seleccione el libro que quiere agregar</label>
+                    <select class="form-control" asp-for="selectedLibroAAgregar" asp-items="@(new SelectList(ViewData["libros"] as List<Domain.Libreria.Libro>, "Id", "Titulo"))">
+                        <option>Seleccione el libro a agregar</option>
                     </select>
                 </div>
             }

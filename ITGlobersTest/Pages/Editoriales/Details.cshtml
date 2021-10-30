@@ -23,6 +23,22 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Editorial.Sede)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Autor.Libros)
+        </dt>
+        <dd class="col-sm-10">
+            <table>
+                @foreach (var libro in Model.Editorial.Libros)
+                {
+                    <tr>
+                        <td>@libro.Id</td>
+                        <td>@libro.Titulo</td>
+                        <td>@libro.Sinopsis</td>
+                        <td>@libro.Paginas</td>
+                    </tr>
+                }
+            </table>
+        </dd>
     </dl>
 </div>
 <div>
