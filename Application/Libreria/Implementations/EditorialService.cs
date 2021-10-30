@@ -3,6 +3,8 @@ using Application.Libreria.Specifications;
 using Domain.Libreria;
 using Infrastructure.Data;
 using Infrastructure.Data.Libreria;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,16 +59,56 @@ namespace Application.Libreria.Implementations
 
         public async Task DeleteEditorialAsync(int id)
         {
-            CancellationToken cancelationToken = new CancellationToken();
-            await unitOfWork.EditorialRepository.DeleteEntityAsync(id);
-            await unitOfWork.CommitAsync(cancelationToken);
+            // Verificar si la editorial existe
+            if (!await unitOfWork.EditorialRepository.EntityExistAsync(id))
+            {
+                throw new EntityNotFoundException(typeof(Editorial));
+            }
+
+            try
+            {
+                CancellationToken cancelationToken = new CancellationToken();
+                await unitOfWork.EditorialRepository.DeleteEntityAsync(id);
+                await unitOfWork.CommitAsync(cancelationToken);
+            }
+            catch (DbUpdateException e)
+            {
+                switch (((SqlException)e.InnerException).Number)
+                {
+                    case 547:
+                        throw new ReferenceConstrainViolationException(typeof(Editorial), typeof(Libro));
+                    default:
+                        throw;
+                }
+            }
         }
 
         public async Task DeleteEditorialAsync(Expression<Func<Editorial, bool>> cond)
         {
-            CancellationToken cancelationToken = new CancellationToken();
-            await unitOfWork.EditorialRepository.DeleteEntitiesAsync(cond);
-            await unitOfWork.CommitAsync(cancelationToken);
+            // Verificar si la editorial existe
+            var editorial = unitOfWork.EditorialRepository.GetEntityAsync(cond);
+
+            if (editorial == null)
+            {
+                throw new EntityNotFoundException(typeof(Editorial));
+            }
+
+            try
+            {
+                CancellationToken cancelationToken = new CancellationToken();
+                await unitOfWork.EditorialRepository.DeleteEntitiesAsync(cond);
+                await unitOfWork.CommitAsync(cancelationToken);
+            }
+            catch (DbUpdateException e)
+            {
+                switch (((SqlException)e.InnerException).Number)
+                {
+                    case 547:
+                        throw new ReferenceConstrainViolationException(typeof(Editorial), typeof(Libro));
+                    default:
+                        throw;
+                }
+            }
         }
 
         public async Task<IEnumerable<Editorial>> GetAllEditorialesAsync(bool eager = false)

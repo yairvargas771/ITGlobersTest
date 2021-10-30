@@ -57,6 +57,13 @@ namespace Application.Libreria.Implementations
 
         public async Task DeleteAutorAsync(int id)
         {
+            // Verificar si el autor existe
+            if (!await unitOfWork.AutorRepository.EntityExistAsync(id))
+            {
+                throw new EntityNotFoundException(typeof(Autor));
+            }
+
+            // Eliminar el autor
             CancellationToken cancelationToken = new CancellationToken();
             await unitOfWork.AutorRepository.DeleteEntityAsync(id);
             await unitOfWork.CommitAsync(cancelationToken);
@@ -64,6 +71,14 @@ namespace Application.Libreria.Implementations
 
         public async Task DeleteAutorAsync(Expression<Func<Autor, bool>> cond)
         {
+            // Verificar si la editorial existe
+            var autor = unitOfWork.AutorRepository.GetEntityAsync(cond);
+
+            if (autor == null)
+            {
+                throw new EntityNotFoundException(typeof(Autor));
+            }
+
             CancellationToken cancelationToken = new CancellationToken();
             await unitOfWork.AutorRepository.DeleteEntitiesAsync(cond);
             await unitOfWork.CommitAsync(cancelationToken);

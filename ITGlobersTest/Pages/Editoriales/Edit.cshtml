@@ -1,0 +1,40 @@
+﻿@page
+@model ITGlobersTest.Pages.Editoriales.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Editorial</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Editorial.Nombre" class="control-label"></label>
+                <input asp-for="Editorial.Nombre" class="form-control" />
+                <span asp-validation-for="Editorial.Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Editorial.Sede" class="control-label"></label>
+                <input asp-for="Editorial.Sede" class="form-control" />
+                <span asp-validation-for="Editorial.Sede" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Editorial.Id" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

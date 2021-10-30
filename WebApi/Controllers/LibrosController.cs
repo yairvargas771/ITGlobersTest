@@ -36,8 +36,15 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteLibroAsync(int id)
         {
-            await libroService.DeleteLibroAsync(id);
-            return Ok();
+            try
+            {
+                await libroService.DeleteLibroAsync(id);
+                return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
@@ -46,7 +53,7 @@ namespace WebApi.Controllers
             try
             {
                 await libroService.CreateLibroAsync(Libro, autorId, editorialId);
-                return CreatedAtAction("GetLibro", new { id = Libro.Id }, Libro);
+                return CreatedAtAction("GetLibro", new { id = Libro.Id }, (LibroDto)Libro);
             }
             catch (EntityAlreadyExistException e)
             {

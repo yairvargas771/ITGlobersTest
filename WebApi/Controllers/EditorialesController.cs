@@ -37,15 +37,26 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteEditorialAsync(int id)
         {
-            await editorialService.DeleteEditorialAsync(id);
-            return Ok();
+            try
+            {
+                await editorialService.DeleteEditorialAsync(id);
+                return Ok();
+            }
+            catch(ReferenceConstrainViolationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch(EntityNotFoundException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateEditorialAsync(Editorial Editorial)
         {
             await editorialService.CreateEditorialAsync(Editorial);
-            return CreatedAtAction("GetEditorial", new { id = Editorial.Id }, Editorial);
+            return CreatedAtAction("GetEditorial", new { id = Editorial.Id }, (EditorialDto)Editorial);
         }
 
         [HttpPut]

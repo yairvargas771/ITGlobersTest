@@ -8,5 +8,7 @@ namespace Domain
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public virtual TKey Id { get; set; }
+
+        public Entity() { }
     }
 }

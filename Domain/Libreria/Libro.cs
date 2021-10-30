@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Domain.Libreria
 {
@@ -16,5 +17,24 @@ namespace Domain.Libreria
         public IList<Autor> Autores {get;set;}
 
         public Libro() { }
+
+        public static explicit operator Libro(LibroDto libroDto)
+        {
+            if (libroDto.Editorial != null)
+                libroDto.Editorial.Libros = null;
+
+            if (libroDto.Autores != null)
+                libroDto.Autores = libroDto.Autores.Select(autor => { autor.Libros = null; return autor; }).ToList();
+
+            return new Libro()
+            {
+                Id = libroDto.Id,
+                Autores = libroDto.Autores,
+                Editorial = libroDto.Editorial,
+                Paginas = libroDto.Paginas,
+                Sinopsis = libroDto.Sinopsis,
+                Titulo = libroDto.Titulo
+            };
+        }
     }
 }

@@ -39,15 +39,22 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAutorAsync(int id)
         {
-            await autorService.DeleteAutorAsync(id);
-            return Ok();
+            try
+            {
+                await autorService.DeleteAutorAsync(id);
+                return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateAutorAsync(Autor autor)
         {
             await autorService.CreateAutorAsync(autor);
-            return CreatedAtAction("GetAutor", new { id = autor.Id }, autor);
+            return CreatedAtAction("GetAutor", new { id = autor.Id }, (AutorDto)autor);
         }
 
         [HttpPut]

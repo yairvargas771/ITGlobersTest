@@ -71,6 +71,13 @@ namespace Application.Libreria.Implementations
 
         public async Task DeleteLibroAsync(int id)
         {
+            // Verificar si el libro existe
+            if (!await unitOfWork.LibroRepository.EntityExistAsync(id))
+            {
+                throw new EntityNotFoundException(typeof(Libro));
+            }
+
+            // Eliminar el libro
             CancellationToken cancelationToken = new CancellationToken();
             await unitOfWork.LibroRepository.DeleteEntityAsync(id);
             await unitOfWork.CommitAsync(cancelationToken);
@@ -78,6 +85,15 @@ namespace Application.Libreria.Implementations
 
         public async Task DeleteLibroAsync(Expression<Func<Libro, bool>> cond)
         {
+            // Verificar si el libro existe
+            var libro = unitOfWork.LibroRepository.GetEntityAsync(cond);
+
+            if (libro == null)
+            {
+                throw new EntityNotFoundException(typeof(Libro));
+            }
+
+            // Eliminar el libro
             CancellationToken cancelationToken = new CancellationToken();
             await unitOfWork.LibroRepository.DeleteEntitiesAsync(cond);
             await unitOfWork.CommitAsync(cancelationToken);
