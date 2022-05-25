@@ -8,7 +8,7 @@ namespace Domain.Libreria
     {
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
-        public decimal Precio { get; set; }
+        public float Precio { get; set; }
         public int Cantidad { get; set; }
         public Categoria Categoria { get; set; }
         public string Unidad { get; set; }
