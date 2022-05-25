@@ -2,7 +2,7 @@
 using Application.Libreria.Specifications;
 using Domain.Libreria;
 using Infrastructure.Data;
-using Infrastructure.Data.Libreria;
+using Infrastructure.Data.Categorias;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,24 +16,24 @@ namespace WebApi.Controllers
     [ApiController]
     public class AutoresController : ControllerBase
     {
-        private readonly IAutorService autorService;
+        private readonly IAutorService productoService;
 
         public AutoresController(IAutorService autorService)
         {
-            this.autorService = autorService;
+            this.productoService = autorService;
         }
 
         [HttpGet("{Id}")]
-        public async Task<ActionResult<AutorDto>> GetAutorAsync(int Id, bool eager = false)
+        public async Task<ActionResult<ProductosDto>> GetAutorAsync(int Id, bool eager = false)
         {
-            var autor = await autorService.GetAutorAsync(Id, eager);
-            return autor == null ? NotFound() : Ok((AutorDto)autor);
+            var autor = await productoService.GetAutorAsync(Id, eager);
+            return autor == null ? NotFound() : Ok((ProductosDto)autor);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AutorDto>>> GetAutoresAsync(bool eager = false)
+        public async Task<ActionResult<IEnumerable<ProductosDto>>> GetAutoresAsync(bool eager = false)
         {
-            return Ok((await autorService.GetAllAutoresAsync(eager)).Select(autor => (AutorDto)autor));
+            return Ok((await productoService.GetAllAutoresAsync(eager)).Select(autor => (ProductosDto)autor));
         }
 
         [HttpDelete("{id}")]
@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await autorService.DeleteAutorAsync(id);
+                await productoService.DeleteAutorAsync(id);
                 return Ok();
             }
             catch (EntityNotFoundException e)
@@ -51,16 +51,16 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAutorAsync(Autor autor)
+        public async Task<ActionResult> CreateAutorAsync(Producto autor)
         {
-            await autorService.CreateAutorAsync(autor);
-            return CreatedAtAction("GetAutor", new { id = autor.Id }, (AutorDto)autor);
+            await productoService.CreateAutorAsync(autor);
+            return CreatedAtAction("GetAutor", new { id = autor.Id }, (ProductosDto)autor);
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateAutorAsync(Autor autor)
+        public async Task<ActionResult> UpdateAutorAsync(Producto autor)
         {
-            await autorService.UpdateAutorAsync(autor);
+            await productoService.UpdateAutorAsync(autor);
             return Ok();
         }
 
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await autorService.AgregarLibroAsync(libroId, autorId);
+                await productoService.AgregarLibroAsync(libroId, autorId);
                 return Ok();
             }
             catch (EntityNotFoundException e)
@@ -87,7 +87,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await autorService.RemoverLibroAsync(libroId, autorId);
+                await productoService.RemoverLibroAsync(libroId, autorId);
                 return Ok();
             }
             catch (EntityNotFoundException e)

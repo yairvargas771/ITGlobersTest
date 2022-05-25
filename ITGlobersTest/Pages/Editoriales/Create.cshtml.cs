@@ -13,24 +13,22 @@ namespace ITGlobersTest.Pages.Editoriales
     public class CreateModel : PageModel
     {
         private readonly EditorialService editorialService;
-        private readonly LibroService libroService;
 
-        public CreateModel(EditorialService autorService, LibroService libroService)
+        public CreateModel(EditorialService autorService)
         {
             this.editorialService = autorService;
-            this.libroService = libroService;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var libros = await libroService.GetLibrosAsync();
-            ViewData["libros"] = libros.ToList();
+            //var libros = await libroService.GetLibrosAsync();
+            //ViewData["libros"] = libros.ToList();
 
             return Page();
         }
 
         [BindProperty]
-        public Editorial Editorial { get; set; }
+        public Categoria Editorial { get; set; }
         [BindProperty]
         public int selectedLibro { get; set; }
 

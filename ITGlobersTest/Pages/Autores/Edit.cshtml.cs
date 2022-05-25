@@ -14,16 +14,14 @@ namespace ITGlobersTest.Pages.Autores
     public class EditModel : PageModel
     {
         private readonly AutorService autorService;
-        private readonly LibroService libroService;
 
-        public EditModel(AutorService autorService, LibroService libroService)
+        public EditModel(AutorService autorService)
         {
             this.autorService = autorService;
-            this.libroService = libroService;
         }
 
         [BindProperty]
-        public Autor Autor { get; set; }
+        public Producto Autor { get; set; }
         [BindProperty]
         public int selectedLibroAEliminar { get; set; }
         [BindProperty]
@@ -43,8 +41,7 @@ namespace ITGlobersTest.Pages.Autores
                 return NotFound();
             }
 
-            var libros = await libroService.GetLibrosAsync();
-            ViewData["libros"] = libros.Where(libro => !Autor.Libros.Where(_libro => _libro.Id == libro.Id).Any()).ToList();
+            // ViewData["libros"] = libros.Where(libro => !Autor.Libros.Where(_libro => _libro.Id == libro.Id).Any()).ToList();
 
             return Page();
         }

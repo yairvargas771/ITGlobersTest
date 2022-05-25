@@ -13,24 +13,21 @@ namespace ITGlobersTest.Pages.Autores
     public class CreateModel : PageModel
     {
         private readonly AutorService autorService;
-        private readonly LibroService libroService;
 
-        public CreateModel(AutorService autorService, LibroService libroService)
+        public CreateModel(AutorService autorService)
         {
             this.autorService = autorService;
-            this.libroService = libroService;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var libros = await libroService.GetLibrosAsync();
-            ViewData["libros"] = libros.ToList();
+            //ViewData["libros"] = libros.ToList();
 
             return Page();
         }
 
         [BindProperty]
-        public Autor Autor { get; set; }
+        public Producto Autor { get; set; }
         [BindProperty]
         public int selectedLibro { get; set; }
 

@@ -1,7 +1,7 @@
 using Application.Libreria.Implementations;
 using Application.Libreria.Specifications;
 using Infrastructure.Data;
-using Infrastructure.Data.Libreria;
+using Infrastructure.Data.Categorias;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,13 +39,12 @@ namespace WebApi
             });
 
 
-            services.AddDbContext<LibreriaContext>(options => 
+            services.AddDbContext<CategoriasContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("LibraryContext")));
 
-            services.AddTransient<LibreriaUnitOfWork>();
+            services.AddTransient<CategoriasUnitOfWork>();
             services.AddTransient<IAutorService, AutorService>();
             services.AddTransient<IEditorialService, EditorialService>();
-            services.AddTransient<ILibroService, LibroService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

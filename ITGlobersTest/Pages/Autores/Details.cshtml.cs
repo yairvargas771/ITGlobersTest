@@ -19,7 +19,7 @@ namespace ITGlobersTest.Pages.Autores
             this.autorService = autorService;
         }
 
-        public Autor Autor { get; set; }
+        public Producto Autor { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {

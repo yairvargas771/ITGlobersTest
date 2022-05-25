@@ -19,7 +19,7 @@ namespace ITGlobersTest.Pages.Editoriales
             this.editorialService = editorialService;
         }
 
-        public IList<Editorial> Editorial { get; set; }
+        public IList<Categoria> Editorial { get; set; }
 
         public async Task OnGetAsync()
         {

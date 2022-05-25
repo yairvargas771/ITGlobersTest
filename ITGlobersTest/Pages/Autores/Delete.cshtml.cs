@@ -20,7 +20,7 @@ namespace ITGlobersTest.Pages.Autores
         }
 
         [BindProperty]
-        public Autor Autor { get; set; }
+        public Producto Autor { get; set; }
         public string Message { get; set; } = "";
 
         public async Task<IActionResult> OnGetAsync(int? id)

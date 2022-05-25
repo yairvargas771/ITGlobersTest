@@ -14,16 +14,14 @@ namespace ITGlobersTest.Pages.Editoriales
     public class EditModel : PageModel
     {
         private readonly EditorialService editorialService;
-        private readonly LibroService libroService;
 
-        public EditModel(EditorialService editorialService, LibroService libroService)
+        public EditModel(EditorialService editorialService)
         {
             this.editorialService = editorialService;
-            this.libroService = libroService;
         }
 
         [BindProperty]
-        public Editorial Editorial { get; set; }
+        public Categoria Editorial { get; set; }
         [BindProperty]
         public int selectedLibroAEliminar { get; set; }
         [BindProperty]
@@ -43,8 +41,7 @@ namespace ITGlobersTest.Pages.Editoriales
                 return NotFound();
             }
 
-            var libros = await libroService.GetLibrosAsync();
-            ViewData["libros"] = libros.Where(libro => !Editorial.Libros.Where(_libro => _libro.Id == libro.Id).Any()).ToList();
+//            ViewData["libros"] = libros.Where(libro => !Editorial.Libros.Where(_libro => _libro.Id == libro.Id).Any()).ToList();
             return Page();
         }
 

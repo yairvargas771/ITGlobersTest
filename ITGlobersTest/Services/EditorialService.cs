@@ -37,25 +37,25 @@ namespace ITGlobersTest.Services
             return "Libro removido";
         }
 
-        public async Task<Editorial> GetEditorialAsync(int id)
+        public async Task<Categoria> GetEditorialAsync(int id)
         {
             var response = await httpClient.GetAsync($"{apiUrl}/api/Editoriales/{id}?eager=true");
             response.EnsureSuccessStatusCode();
-            return (Editorial)JsonConvert.DeserializeObject<EditorialDto>(await response.Content.ReadAsStringAsync());
+            return (Categoria)JsonConvert.DeserializeObject<CategoriasDto>(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<IEnumerable<Editorial>> GetEditorialesAsync()
+        public async Task<IEnumerable<Categoria>> GetEditorialesAsync()
         {
             var response = httpClient.GetAsync($"{apiUrl}/api/Editoriales?eager=true").Result;
             response.EnsureSuccessStatusCode();
-            return JsonConvert.DeserializeObject<IEnumerable<EditorialDto>>(await response.Content.ReadAsStringAsync()).Select(aDto => (Editorial)aDto);
+            return JsonConvert.DeserializeObject<IEnumerable<CategoriasDto>>(await response.Content.ReadAsStringAsync()).Select(aDto => (Categoria)aDto);
         }
 
-        public async Task<Editorial> SaveEditorialAsync(Editorial editorial, int libroId)
+        public async Task<Categoria> SaveEditorialAsync(Categoria editorial, int libroId)
         {
             var response = await httpClient.PostAsync($"{apiUrl}/api/Editoriales", editorial, new JsonMediaTypeFormatter());
             response.EnsureSuccessStatusCode();
-            var _editorial = JsonConvert.DeserializeObject<EditorialDto>(await response.Content.ReadAsStringAsync());
+            var _editorial = JsonConvert.DeserializeObject<CategoriasDto>(await response.Content.ReadAsStringAsync());
 
             if (libroId != 0)
             {
@@ -65,7 +65,7 @@ namespace ITGlobersTest.Services
                     Encoding.UTF8,
                     "application/json"));
             }
-            return (Editorial)JsonConvert.DeserializeObject<EditorialDto>(await response.Content.ReadAsStringAsync());
+            return (Categoria)JsonConvert.DeserializeObject<CategoriasDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<string> DeleteEditorialAsync(int id)
@@ -74,7 +74,7 @@ namespace ITGlobersTest.Services
             return response.StatusCode != System.Net.HttpStatusCode.OK ? await response.Content.ReadAsStringAsync() : "";
         }
 
-        public async Task UpdateEditorialAsync(Editorial editorial)
+        public async Task UpdateEditorialAsync(Categoria editorial)
         {
             var response = await httpClient.PutAsync(
                 $"{apiUrl}/api/Editoriales",

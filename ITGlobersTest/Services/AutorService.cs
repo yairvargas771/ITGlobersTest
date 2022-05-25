@@ -15,11 +15,11 @@ namespace ITGlobersTest.Services
         private readonly string apiUrl = "https://localhost:44315";
         private readonly HttpClient httpClient = new HttpClient();
 
-        public async Task<Autor> GetAutorAsync(int id)
+        public async Task<Producto> GetAutorAsync(int id)
         {
             var response = await httpClient.GetAsync($"{apiUrl}/api/Autores/{id}?eager=true");
             response.EnsureSuccessStatusCode();
-            return (Autor)JsonConvert.DeserializeObject<AutorDto>(await response.Content.ReadAsStringAsync());
+            return (Producto)JsonConvert.DeserializeObject<ProductosDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<string> AsociarLibro(int libroId, int autorId)
@@ -44,18 +44,18 @@ namespace ITGlobersTest.Services
             return "Libro removido";
         }
 
-        public async Task<IEnumerable<Autor>> GetAutoresAsync()
+        public async Task<IEnumerable<Producto>> GetAutoresAsync()
         {
             var response = httpClient.GetAsync($"{apiUrl}/api/Autores?eager=true").Result;
             response.EnsureSuccessStatusCode();
-            return JsonConvert.DeserializeObject<IEnumerable<AutorDto>>(await response.Content.ReadAsStringAsync()).Select(aDto => (Autor)aDto);
+            return JsonConvert.DeserializeObject<IEnumerable<ProductosDto>>(await response.Content.ReadAsStringAsync()).Select(aDto => (Producto)aDto);
         }
 
-        public async Task<Autor> SaveAutorAsync(Autor autor, int libroId)
+        public async Task<Producto> SaveAutorAsync(Producto autor, int libroId)
         {
             var response = await httpClient.PostAsync($"{apiUrl}/api/Autores", autor, new JsonMediaTypeFormatter());
             response.EnsureSuccessStatusCode();
-            var _autor = JsonConvert.DeserializeObject<AutorDto>(await response.Content.ReadAsStringAsync());
+            var _autor = JsonConvert.DeserializeObject<ProductosDto>(await response.Content.ReadAsStringAsync());
 
             if (libroId != 0)
             {
@@ -65,7 +65,7 @@ namespace ITGlobersTest.Services
                     Encoding.UTF8,
                     "application/json"));
             }
-            return (Autor)JsonConvert.DeserializeObject<AutorDto>(await response.Content.ReadAsStringAsync());
+            return (Producto)JsonConvert.DeserializeObject<ProductosDto>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<string> DeleteAutorAsync(int id)
@@ -74,7 +74,7 @@ namespace ITGlobersTest.Services
             return response.StatusCode != System.Net.HttpStatusCode.OK ? await response.Content.ReadAsStringAsync() : "";
         }
 
-        public async Task UpdateAutorAsync(Autor autor)
+        public async Task UpdateAutorAsync(Producto autor)
         {
             var response = await httpClient.PutAsync(
                 $"{apiUrl}/api/Autores",

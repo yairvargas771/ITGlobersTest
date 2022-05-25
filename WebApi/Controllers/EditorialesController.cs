@@ -22,16 +22,16 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EditorialDto>> GetEditorialAsync(int id, bool eager = false)
+        public async Task<ActionResult<CategoriasDto>> GetEditorialAsync(int id, bool eager = false)
         {
             var Editorial = await editorialService.GetEditorialAsync(id, eager);
-            return Editorial == null ? NotFound() : Ok((EditorialDto)Editorial);
+            return Editorial == null ? NotFound() : Ok((CategoriasDto)Editorial);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Editorial>>> GetEditorialesAsync(bool eager = false)
+        public async Task<ActionResult<IEnumerable<Categoria>>> GetEditorialesAsync(bool eager = false)
         {
-            return Ok((await editorialService.GetAllEditorialesAsync(eager)).Select(editorial => (EditorialDto)editorial));
+            return Ok((await editorialService.GetAllEditorialesAsync(eager)).Select(editorial => (CategoriasDto)editorial));
         }
 
         [HttpDelete("{id}")]
@@ -53,14 +53,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEditorialAsync(Editorial Editorial)
+        public async Task<ActionResult> CreateEditorialAsync(Categoria Editorial)
         {
             await editorialService.CreateEditorialAsync(Editorial);
-            return CreatedAtAction("GetEditorial", new { id = Editorial.Id }, (EditorialDto)Editorial);
+            return CreatedAtAction("GetEditorial", new { id = Editorial.Id }, (CategoriasDto)Editorial);
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateEditorialAsync(Editorial Editorial)
+        public async Task<ActionResult> UpdateEditorialAsync(Categoria Editorial)
         {
             await editorialService.UpdateEditorialAsync(Editorial);
             return Ok();

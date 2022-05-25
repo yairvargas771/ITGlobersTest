@@ -4,17 +4,16 @@ using Microsoft.Extensions.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data.Libreria
+namespace Infrastructure.Data.Categorias
 {
-    public class LibreriaContext : DbContext
+    public class CategoriasContext : DbContext
     {
         private readonly IConfiguration Config;
 
-        public DbSet<Autor> Autores;
-        public DbSet<Editorial> Editoriales;
-        public DbSet<Libro> Libros;
+        public DbSet<Producto> Autores;
+        public DbSet<Categoria> Editoriales;
 
-        public LibreriaContext(DbContextOptions<LibreriaContext> options, IConfiguration config) : base(options)
+        public CategoriasContext(DbContextOptions<CategoriasContext> options, IConfiguration config) : base(options)
         {
             Config = config;
         }
@@ -29,9 +28,8 @@ namespace Infrastructure.Data.Libreria
             modelBuilder.HasDefaultSchema(Config.GetValue<string>("SchemaName"));
 
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Autor>();
-            modelBuilder.Entity<Editorial>();
-            modelBuilder.Entity<Libro>();
+            modelBuilder.Entity<Producto>();
+            modelBuilder.Entity<Categoria>();
         }
     }
 }

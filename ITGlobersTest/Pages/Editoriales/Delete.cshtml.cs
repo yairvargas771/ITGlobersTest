@@ -20,7 +20,7 @@ namespace ITGlobersTest.Pages.Editoriales
         }
 
         [BindProperty]
-        public Editorial Editorial { get; set; }
+        public Categoria Editorial { get; set; }
         public string Message { get; set; } = "";
 
         public async Task<IActionResult> OnGetAsync(int? id)
