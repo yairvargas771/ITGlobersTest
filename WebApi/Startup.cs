@@ -43,8 +43,8 @@ namespace WebApi
                 options.UseSqlServer(Configuration.GetConnectionString("LibraryContext")));
 
             services.AddTransient<CategoriasUnitOfWork>();
-            services.AddTransient<IAutorService, AutorService>();
-            services.AddTransient<IEditorialService, EditorialService>();
+            services.AddTransient<IProductosService, ProductosService>();
+            services.AddTransient<ICategoriasService, CategoriasService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

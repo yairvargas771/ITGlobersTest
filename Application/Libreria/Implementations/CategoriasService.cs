@@ -15,20 +15,20 @@ using System.Threading.Tasks;
 
 namespace Application.Libreria.Implementations
 {
-    public class EditorialService : IEditorialService
+    public class CategoriasService : ICategoriasService
     {
         private readonly CategoriasUnitOfWork unitOfWork;
 
-        public EditorialService(CategoriasUnitOfWork unitOfWork)
+        public CategoriasService(CategoriasUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task AgregarLibroAsync(int isbn, int editorialId)
+        public async Task AgregarProductoAsync(int idProducto, int idCategoria)
         {
             // Verificar si la editorial existe
-            var editorial = await unitOfWork.CategoriaRepository.GetEntityAsync(editorialId, include: "Libros");
-            if (editorial == null)
+            var categoria = await unitOfWork.CategoriaRepository.GetEntityAsync(idCategoria, include: "Libros");
+            if (categoria == null)
                 throw new EntityNotFoundException(typeof(Categoria));
 
             // Guardar los cambios en el contexto
@@ -36,7 +36,7 @@ namespace Application.Libreria.Implementations
             await unitOfWork.CommitAsync(cancelationToken);
         }
 
-        public async Task<Categoria> CreateEditorialAsync(Categoria editorial)
+        public async Task<Categoria> CreateCategoriaAsync(Categoria editorial)
         {
             CancellationToken cancelationToken = new CancellationToken();
             var result = await unitOfWork.CategoriaRepository.InsertEntityAsync(editorial);
@@ -44,7 +44,7 @@ namespace Application.Libreria.Implementations
             return result;
         }
 
-        public async Task DeleteEditorialAsync(int id)
+        public async Task DeleteCategoriaAsync(int id)
         {
             // Verificar si la editorial existe
             if (!await unitOfWork.CategoriaRepository.EntityExistAsync(id))
@@ -70,7 +70,7 @@ namespace Application.Libreria.Implementations
             }
         }
 
-        public async Task DeleteEditorialAsync(Expression<Func<Categoria, bool>> cond)
+        public async Task DeleteCategoriaAsync(Expression<Func<Categoria, bool>> cond)
         {
             // Verificar si la editorial existe
             var editorial = unitOfWork.CategoriaRepository.GetEntityAsync(cond);
@@ -98,31 +98,31 @@ namespace Application.Libreria.Implementations
             }
         }
 
-        public async Task<IEnumerable<Categoria>> GetAllEditorialesAsync(bool eager = false)
+        public async Task<IEnumerable<Categoria>> GetAllCategoriasAsync(bool eager = false)
         {
             return await unitOfWork.CategoriaRepository.GetEntitiesAsync(include: eager ? "Libros" : "");
         }
 
-        public async Task<Categoria> GetEditorialAsync(int id, bool eager = false)
+        public async Task<Categoria> GetCategoriaAsync(int id, bool eager = false)
         {
             return await unitOfWork.CategoriaRepository.GetEntityAsync(id, eager ? "Libros": "");
         }
 
-        public async Task<Categoria> GetEditorialAsync(Expression<Func<Categoria, bool>> cond, bool eager = false)
+        public async Task<Categoria> GetCategoriaAsync(Expression<Func<Categoria, bool>> cond, bool eager = false)
         {
             return await unitOfWork.CategoriaRepository.GetEntityAsync(cond, eager ? "Libros" : "");
         }
 
-        public async Task<IEnumerable<Categoria>> GetEditorialesAsync(Expression<Func<Categoria, bool>> cond, bool eager = false)
+        public async Task<IEnumerable<Categoria>> GetCategoriasAsync(Expression<Func<Categoria, bool>> cond, bool eager = false)
         {
             return await unitOfWork.CategoriaRepository.GetEntitiesAsync(cond, eager ? "Libros" : "");
         }
 
-        public async Task RemoverLibroAsync(int isbn, int editorialId)
+        public async Task RemoverProductoAsync(int idProducto, int idCategoria)
         {
             // Verificar si la editorial existe
-            var editorial = await unitOfWork.CategoriaRepository.GetEntityAsync(editorialId, include: "Libros");
-            if (editorial == null)
+            var categoria = await unitOfWork.CategoriaRepository.GetEntityAsync(idCategoria, include: "Libros");
+            if (categoria == null)
                 throw new EntityNotFoundException(typeof(Categoria));
 
             // Guardar los cambios
@@ -130,10 +130,10 @@ namespace Application.Libreria.Implementations
             await unitOfWork.CommitAsync(cancellationToken);
         }
 
-        public async Task UpdateEditorialAsync(Categoria Editorial)
+        public async Task UpdateCategoriaAsync(Categoria categoria)
         {
             CancellationToken cancelationToken = new CancellationToken();
-            unitOfWork.CategoriaRepository.UpdateEntity(Editorial);
+            unitOfWork.CategoriaRepository.UpdateEntity(categoria);
             await unitOfWork.CommitAsync(cancelationToken);
         }
     }

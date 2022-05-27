@@ -12,34 +12,34 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EditorialesController : ControllerBase
+    public class CategoriasController : ControllerBase
     {
-        private readonly IEditorialService editorialService;
+        private readonly ICategoriasService categoriaService;
 
-        public EditorialesController(IEditorialService EditorialService)
+        public CategoriasController(ICategoriasService categoriaService)
         {
-            this.editorialService = EditorialService;
+            this.categoriaService = categoriaService;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoriasDto>> GetEditorialAsync(int id, bool eager = false)
+        public async Task<ActionResult<CategoriasDto>> GetCategoriaAsync(int id, bool eager = false)
         {
-            var Editorial = await editorialService.GetEditorialAsync(id, eager);
-            return Editorial == null ? NotFound() : Ok((CategoriasDto)Editorial);
+            var categoria = await categoriaService.GetCategoriaAsync(id, eager);
+            return categoria == null ? NotFound() : Ok((CategoriasDto)categoria);
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetEditorialesAsync(bool eager = false)
         {
-            return Ok((await editorialService.GetAllEditorialesAsync(eager)).Select(editorial => (CategoriasDto)editorial));
+            return Ok((await categoriaService.GetAllCategoriasAsync(eager)).Select(editorial => (CategoriasDto)editorial));
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteEditorialAsync(int id)
+        public async Task<ActionResult> DeleteCategoriaAsync(int id)
         {
             try
             {
-                await editorialService.DeleteEditorialAsync(id);
+                await categoriaService.DeleteCategoriaAsync(id);
                 return Ok();
             }
             catch(ReferenceConstrainViolationException e)
@@ -53,25 +53,25 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEditorialAsync(Categoria Editorial)
+        public async Task<ActionResult> CreateCategoriaAsync(Categoria categoria)
         {
-            await editorialService.CreateEditorialAsync(Editorial);
-            return CreatedAtAction("GetEditorial", new { id = Editorial.Id }, (CategoriasDto)Editorial);
+            await categoriaService.CreateCategoriaAsync(categoria);
+            return CreatedAtAction("GetCategoria", new { id = categoria.Id }, (CategoriasDto)categoria);
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateEditorialAsync(Categoria Editorial)
+        public async Task<ActionResult> UpdateEditorialAsync(Categoria categoria)
         {
-            await editorialService.UpdateEditorialAsync(Editorial);
+            await categoriaService.UpdateCategoriaAsync(categoria);
             return Ok();
         }
 
-        [HttpPut("{editorialId}/Agregar-Libro/{libroId}")]
-        public async Task<ActionResult> AgregarLibro(int libroId, int editorialId)
+        [HttpPut("{categoriaId}/Agregar-Producto/{productoId}")]
+        public async Task<ActionResult> AgregarProductoACategoria(int productoId, int categoriaId)
         {
             try
             {
-                await editorialService.AgregarLibroAsync(libroId, editorialId);
+                await categoriaService.AgregarProductoAsync(productoId, categoriaId);
                 return Ok();
             }
             catch (EntityNotFoundException e)
@@ -84,12 +84,12 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("{editorialId}/Remover-Libro/{libroId}")]
-        public async Task<ActionResult> RemoverLibro(int libroId, int editorialId)
+        [HttpPut("{categoriaId}/Remover-Producto/{productoId}")]
+        public async Task<ActionResult> RemoverProductoDeCategoria(int productoId, int categoriaID)
         {
             try
             {
-                await editorialService.RemoverLibroAsync(libroId, editorialId);
+                await categoriaService.RemoverProductoAsync(productoId, categoriaID);
                 return Ok();
             }
             catch (EntityNotFoundException e)

@@ -12,37 +12,24 @@ using System.Threading.Tasks;
 
 namespace Application.Libreria.Implementations
 {
-    public class AutorService : IAutorService
+    public class ProductosService : IProductosService
     {
         private readonly CategoriasUnitOfWork unitOfWork;
 
-        public AutorService(CategoriasUnitOfWork unitOfWork)
+        public ProductosService(CategoriasUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task AgregarLibroAsync(int isbn, int autorId)
+        public async Task<Producto> CreateProductoAsync(Producto producot)
         {
             CancellationToken cancelationToken = new CancellationToken();
-
-            // Verificar si el autor existe
-            var autor = await unitOfWork.ProductoRepository.GetEntityAsync(autorId, include: "Libros");
-            if (autor == null)
-                throw new EntityNotFoundException(typeof(Producto));
-
-            // Guardar los cambios en el contexto
-            await unitOfWork.CommitAsync(cancelationToken);
-        }
-
-        public async Task<Producto> CreateAutorAsync(Producto autor)
-        {
-            CancellationToken cancelationToken = new CancellationToken();
-            var result = await unitOfWork.ProductoRepository.InsertEntityAsync(autor);
+            var result = await unitOfWork.ProductoRepository.InsertEntityAsync(producot);
             await unitOfWork.CommitAsync(cancelationToken);
             return result;
         }
 
-        public async Task DeleteAutorAsync(int id)
+        public async Task DeleteProductoAsync(int id)
         {
             // Verificar si el autor existe
             if (!await unitOfWork.ProductoRepository.EntityExistAsync(id))
@@ -56,7 +43,7 @@ namespace Application.Libreria.Implementations
             await unitOfWork.CommitAsync(cancelationToken);
         }
 
-        public async Task DeleteAutorAsync(Expression<Func<Producto, bool>> cond)
+        public async Task DeleteProductoAsync(Expression<Func<Producto, bool>> cond)
         {
             // Verificar si la editorial existe
             var autor = unitOfWork.ProductoRepository.GetEntityAsync(cond);
@@ -71,42 +58,30 @@ namespace Application.Libreria.Implementations
             await unitOfWork.CommitAsync(cancelationToken);
         }
 
-        public async Task<IEnumerable<Producto>> GetAllAutoresAsync(bool eager = false)
+        public async Task<IEnumerable<Producto>> GetAllProductosAsync(bool eager = false)
         {
             return await unitOfWork.ProductoRepository.GetEntitiesAsync(null, eager ? "Libros" : "");
         }
 
-        public async Task<Producto> GetAutorAsync(int id, bool eager = false)
+        public async Task<Producto> GetProductoAsync(int id, bool eager = false)
         {
             return await unitOfWork.ProductoRepository.GetEntityAsync(id, eager ? "Libros" : "");
         }
 
-        public async Task<Producto> GetAutorAsync(Expression<Func<Producto, bool>> cond, bool eager = false)
+        public async Task<Producto> GetProductoAsync(Expression<Func<Producto, bool>> cond, bool eager = false)
         {
             return await unitOfWork.ProductoRepository.GetEntityAsync(cond, eager ? "Libros": "");
         }
 
-        public async Task<IEnumerable<Producto>> GetAutoresAsync(Expression<Func<Producto, bool>> cond, bool eager = false)
+        public async Task<IEnumerable<Producto>> GetProductosAsync(Expression<Func<Producto, bool>> cond, bool eager = false)
         {
             return await unitOfWork.ProductoRepository.GetEntitiesAsync(cond, eager ? "Libros" : "");
         }
 
-        public async Task RemoverLibroAsync(int isbn, int autorId)
-        {
-            // Verificar si el autor existe
-            var autor = await unitOfWork.ProductoRepository.GetEntityAsync(autorId, include: "Libros");
-            if (autor == null)
-                throw new EntityNotFoundException(typeof(Producto));
-
-            // Guardar los cambios
-            CancellationToken cancellationToken = new CancellationToken();
-            await unitOfWork.CommitAsync(cancellationToken);
-        }
-
-        public async Task UpdateAutorAsync(Producto autor)
+        public async Task UpdateProductoAsync(Producto producto)
         {
             CancellationToken cancelationToken = new CancellationToken();
-            unitOfWork.ProductoRepository.UpdateEntity(autor);
+            unitOfWork.ProductoRepository.UpdateEntity(producto);
             await unitOfWork.CommitAsync(cancelationToken);
         }
     }
