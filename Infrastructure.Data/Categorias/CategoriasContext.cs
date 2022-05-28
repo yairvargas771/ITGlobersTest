@@ -10,8 +10,8 @@ namespace Infrastructure.Data.Categorias
     {
         private readonly IConfiguration Config;
 
-        public DbSet<Producto> Autores;
-        public DbSet<Categoria> Editoriales;
+        public DbSet<Producto> Productos;
+        public DbSet<Categoria> Categorias;
 
         public CategoriasContext(DbContextOptions<CategoriasContext> options, IConfiguration config) : base(options)
         {

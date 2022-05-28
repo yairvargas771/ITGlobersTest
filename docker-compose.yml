@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+  web:    
+    container_name: sysventas_categorias_ms
+    build: .
+    environment:
+      - ConnectionStrings= '{"LibraryContext":"Server=sql.data;User=sa;Password=Pass@word;DataBase=sysventas_categorias_db;"}'
+    ports:
+      - "5002:80"
+    depends_on:
+      - sql.data
+  
+  sql.data:
+    image: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+    container_name: sysventas_categorias_db
+    environment: 
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "1434:1433"
+    

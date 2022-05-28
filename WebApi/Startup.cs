@@ -67,6 +67,9 @@ namespace WebApi
             {
                 endpoints.MapControllers();
             });
+            using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
+
+            scope.ServiceProvider.GetRequiredService<CategoriasContext>().Database.Migrate();
         }
     }
 }
